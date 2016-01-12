@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SHM CALLER</title>
+
+    <style type="text/css">
+
+        body {
+          background: -webkit-linear-gradient(left, #67c261 , #f47974); 
+        }
+
+
+          .logo {
+                  position: relative;
+                  left: 500px;
+                  top: 10px;
+
+          }
+
+
+
+          .call {
+                  position: relative;
+                  left: 500px;
+                  top: 100px;
+                  width: 70px;
+                  height: 50px
+
+                }
+
+
+
+            .hangup {
+              
+                  position: relative;
+                  left: 600px;
+                  top: 100px;
+                  width: 70px;
+                  height: 50px;
+            }    
+
+
+            button.call, button.hangup, input {
+    -moz-box-shadow: 1px 2px 10px #BBB;
+    -webkit-box-shadow: 1px 2px 10px #BBB;
+    box-shadow: 1px 2px 10px #BBB;
+    border: 1px solid #d4d4d4;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+
+
+
+          input {
+    position: relative;
+    bottom:  430px;
+    top: 30px;
+    left : 250px;
+  border: 1px solid #999;
+  line-height: 1.4em;
+  font-size: 24px;
+  padding: 10px;
+  width: 466px;
+}
+
+
+    .lbl{
+          left: 100px;
+    }
+
+#log {
+  position: absolute;
+  bottom: 150px;
+  
+  right: 150px;
+
+  width: 466px;
+  height: 25px;
+  background: #404040;
+  padding: 10px;
+  /*margin-left: -243px;*/
+  margin: 25px auto 0 auto;
+  border: 1px solid #d4d4d4;
+  text-decoration: none;
+  font:18px/normal sans-serif;
+  color: white;
+  white-space: nowrap;
+  outline: none;
+  background-color: #404040;
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#000), to(#404040));
+  background-image: -moz-linear-gradient(#000, #404040);
+  background-image: -o-linear-gradient(#000, #404040);
+  background-image: linear-gradient(#000, #404040);
+  -webkit-background-clip: padding;
+  -moz-background-clip: padding;
+  -o-background-clip: padding-box;
+  /*background-clip: padding-box;*/ /* commented out due to Opera 11.10 bug */
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  line-height: 25px;
+  border-radius: 5px;
+  
+}
+
+
+
+
+
+
+
+
+
+
+    </style>
+
+
+    <script type="text/javascript"
+      src="//static.twilio.com/libs/twiliojs/1.2/twilio.min.js"></script>
+    <script type="text/javascript"
+      src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">
+    </script>
+  
+    <script type="text/javascript">
+  
+    Twilio.Device.setup("<%= token %>", {debug: true});
+  
+      Twilio.Device.ready(function (device) {
+        $("#log").text("Client '<%= client_name %>' is ready");
+      });
+  
+      Twilio.Device.error(function (error) {
+        $("#log").text("Error: " + error.message);
+      });
+  
+      Twilio.Device.connect(function (conn) {
+        $("#log").text("Successfully established call");
+      });
+  
+      Twilio.Device.disconnect(function (conn) {
+        $("#log").text("Call ended");
+      });
+  
+      Twilio.Device.incoming(function (conn) {
+        $("#log").text("Incoming connection from " + conn.parameters.From);
+        // accept the incoming connection and start two-way audio
+        conn.accept();
+      });
+  
+      function call() {
+        // get the phone number or client to connect the call to
+        params = {"PhoneNumber": $("#number").val()};
+        Twilio.Device.connect(params);
+      }
+  
+      function hangup() {
+        Twilio.Device.disconnectAll();
+      }
+    </script>
+  </head>
+  <body>
+      <div class="logo"><img src='http://s15.postimg.org/bxi7mvupn/shm_logo.png' border='0' alt="shm logo" /></div>
+
+    <span><button class="call" onclick="call();">
+      CALL
+    </button></span>
+  
+    <button class="hangup" onclick="hangup();">
+      Hangup
+    </button>
+  
+    <input type="text" id="number" name="number"
+      placeholder="Enter a phone number or client to call"/>
+  
+    <div class="lbl" id="log">Connected...</div>
+  </body>
+</html>
